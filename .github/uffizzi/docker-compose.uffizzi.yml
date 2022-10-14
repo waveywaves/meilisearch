@@ -1,0 +1,31 @@
+version: "3"
+
+x-uffizzi:
+  ingress:
+    service: nginx
+    port: 8081
+
+services:
+  meilisearch:
+    image: "${MEILISEARCH_IMAGE}"
+    restart: unless-stopped
+    ports:
+    - "7681:7681"
+    - "7700:7700"
+    environment:
+    - MEILI_MASTER_KEY="dev"
+    deploy:
+      resources:
+        limits:
+          memory: 500M
+  
+  nginx:
+    image: nginx:alpine
+    volumes:
+    - nginxconf:/etc/nginx/nginx.conf
+    restart: unless-stopped
+    ports:
+    - "8081:8081"
+
+volumes: 
+  nginxconf: .github/uffizzi/nginx/nginx.conf
